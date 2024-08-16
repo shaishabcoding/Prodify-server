@@ -75,6 +75,83 @@ const client = new MongoClient(process.env.DB_URI, {
     const productsCount = await productCollection.countDocuments(matchStage);
     res.send({ products, productsCount });
   });
+
+  app.get("/brands", async (req, res) => {
+    try {
+      const brands = await productCollection
+        .aggregate([
+          {
+            $group: {
+              _id: null,
+              brands: { $addToSet: "$brandName" }, // Collect unique brand names
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              brands: 1,
+            },
+          },
+        ])
+        .toArray();
+
+      res.send(brands[0] ? brands[0].brands : []);
+    } catch (err) {
+      res.status(500).send({ error: "Failed to fetch brands" });
+    }
+  });
+
+  app.get("/categories", async (req, res) => {
+    try {
+      const categories = await productCollection
+        .aggregate([
+          {
+            $group: {
+              _id: null,
+              categories: { $addToSet: "$category" }, // Collect unique categories
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              categories: 1,
+            },
+          },
+        ])
+        .toArray();
+
+      res.send(categories[0] ? categories[0].categories : []);
+    } catch (err) {
+      res.status(500).send({ error: "Failed to fetch categories" });
+    }
+  });
+
+  app.get("/price-range", async (req, res) => {
+    try {
+      const priceRange = await productCollection
+        .aggregate([
+          {
+            $group: {
+              _id: null,
+              minPrice: { $min: "$price" }, // Find the minimum price
+              maxPrice: { $max: "$price" }, // Find the maximum price
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              minPrice: 1,
+              maxPrice: 1,
+            },
+          },
+        ])
+        .toArray();
+
+      res.send(priceRange[0] ? priceRange[0] : { minPrice: 0, maxPrice: 0 });
+    } catch (err) {
+      res.status(500).send({ error: "Failed to fetch price range" });
+    }
+  });
 })();
 
 app.get("/", (req, res) => {
