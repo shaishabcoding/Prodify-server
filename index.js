@@ -20,9 +20,9 @@ const client = new MongoClient(process.env.DB_URI, {
 });
 
 (async () => {
-  await client.connect();
-  await client.db("admin").command({ ping: 1 });
-  console.log("Pinged your deployment. You successfully connected to MongoDB!");
+  // await client.connect();
+  // await client.db("admin").command({ ping: 1 });
+  // console.log("Pinged your deployment. You successfully connected to MongoDB!");
 
   const DB = client.db("Prodify");
   const productCollection = DB.collection("products");
@@ -36,11 +36,30 @@ const client = new MongoClient(process.env.DB_URI, {
   app.get("/products", async (req, res) => {
     const limit = parseInt(req.query.limit, 10) || 10;
     const offset = parseInt(req.query.offset, 10) || 0;
-    const { search, sort } = req.query;
+    const { search, sort, minPrice, maxPrice, category, brand } = req.query;
     const matchStage = {};
 
+    // Text search filter
     if (search) {
       matchStage.$text = { $search: search };
+    }
+
+    // Price range filter
+    if (minPrice) {
+      matchStage.price = { ...matchStage.price, $gte: parseFloat(minPrice) };
+    }
+    if (maxPrice) {
+      matchStage.price = { ...matchStage.price, $lte: parseFloat(maxPrice) };
+    }
+
+    // Category filter
+    if (category) {
+      matchStage.category = category;
+    }
+
+    // Brand filter
+    if (brand) {
+      matchStage.brandName = brand;
     }
 
     // Define sorting logic based on query parameters
