@@ -97,3 +97,27 @@ Retrieve all unique category names from the product catalog.
 
 Retrieve the minimum and maximum prices available in the product catalog.
 
+## Dependencies
+
+This project requires the following npm packages:
+
+- **`cors`**: ^2.8.5
+  - Provides middleware to enable Cross-Origin Resource Sharing (CORS) in your Express application.
+
+- **`dotenv`**: ^16.4.5
+  - Loads environment variables from a `.env` file into `process.env`.
+
+- **`express`**: ^4.19.2
+  - A web application framework for Node.js, used for building the server and handling HTTP requests.
+
+- **`jsonwebtoken`**: ^9.0.2
+  - A library to issue and verify JSON Web Tokens (JWT) for authentication.
+
+- **`mongodb`**: ^6.8.0
+  - The official MongoDB driver for Node.js, used for interacting with MongoDB databases.
+
+To install these dependencies, run:
+
+```bash
+npm install
+```
