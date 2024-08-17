@@ -33,6 +33,22 @@ const client = new MongoClient(process.env.DB_URI, {
     res.send({ token });
   });
 
+  const verifyToken = (req, res, next) => {
+    const token = req.headers.authorization.split(" ")[1];
+    if (!token) {
+      return res.status(401).send({ message: "unauthorized access 49" });
+    }
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+      if (err) {
+        console.log("err 56");
+
+        return res.status(401).send({ message: "unauthorized access 55" });
+      }
+      req.user = { email: decoded };
+      next();
+    });
+  };
+
   app.get("/products", async (req, res) => {
     const limit = parseInt(req.query.limit, 10) || 10;
     const offset = parseInt(req.query.offset, 10) || 0;
@@ -93,6 +109,13 @@ const client = new MongoClient(process.env.DB_URI, {
 
     const productsCount = await productCollection.countDocuments(matchStage);
     res.send({ products, productsCount });
+  });
+
+  app.get("/products/:id", verifyToken, async (req, res) => {
+    const result = await productCollection.findOne({
+      _id: new ObjectId(req.params.id),
+    });
+    res.send(result);
   });
 
   app.get("/brands", async (req, res) => {
