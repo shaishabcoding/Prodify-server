@@ -58,6 +58,42 @@ The server will start on `http://localhost:5000`. You can now use the API endpoi
 ### 5. Testing the API
 
 You can use tools like Postman, cURL, or your browser to test the API endpoints. Make sure your MongoDB instance is running and properly connected to the server.
-```
 
-This section is ready to be added to your `README.md` file to guide users on how to install and set up your project.
+## API Endpoints
+
+### GET /products
+
+Retrieve products with optional filters, sorting, and pagination.
+
+**Query Parameters:**
+
+- `search` (optional): Full-text search query.
+- `limit` (optional): Number of products to return (default: 10).
+- `offset` (optional): Number of products to skip for pagination (default: 0).
+- `sort` (optional): Sort by:
+  - `priceLowToHigh`: Sort by price in ascending order.
+  - `priceHighToLow`: Sort by price in descending order.
+  - `dateNewest`: Sort by the newest products first.
+- `minPrice` (optional): Minimum price filter.
+- `maxPrice` (optional): Maximum price filter.
+- `category` (optional): Filter by category name.
+- `brand` (optional): Filter by brand name.
+
+---
+
+### GET /brands
+
+Retrieve all unique brand names from the product catalog.
+
+---
+
+### GET /categories
+
+Retrieve all unique category names from the product catalog.
+
+---
+
+### GET /price-range
+
+Retrieve the minimum and maximum prices available in the product catalog.
+
